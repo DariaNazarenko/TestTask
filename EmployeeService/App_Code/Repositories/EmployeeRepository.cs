@@ -36,17 +36,6 @@ namespace EmployeeService.App_Code.Repositories
             }
 
             return employee;
-            //using (SqlConnection connection = new SqlConnection(connectionString))
-            //{
-            //    string query = String.Format("SELECT * FROM Employee WHERE ID = {0}", id);
-            //    using (SqlCommand command = new SqlCommand(query, connection))
-            //    {
-            //        DataTable dataTable = new DataTable();
-            //        SqlDataAdapter adapter = new SqlDataAdapter(command);
-            //        adapter.Fill(dataTable);
-            //        return dataTable;
-            //    }
-            //}
         }
 
         public async Task<DataTable> GetSubordinatesForEmployeeAsync(int id)
@@ -68,17 +57,6 @@ namespace EmployeeService.App_Code.Repositories
             }
 
             return employees;
-            //using (SqlConnection connection = new SqlConnection(connectionString))
-            //{
-            //    string query = String.Format("SELECT * FROM Employee WHERE ManagerId = {0}", id);
-            //    using (SqlCommand command = new SqlCommand(query, connection))
-            //    {
-            //        DataTable dataTable = new DataTable();
-            //        SqlDataAdapter adapter = new SqlDataAdapter(command);
-            //        adapter.Fill(dataTable);
-            //        return dataTable;
-            //    }
-            //}
         }
 
         public async Task<bool> UpdateEmployeeAsync(int id, int enabled)
