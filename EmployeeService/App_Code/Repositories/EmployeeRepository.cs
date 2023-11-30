@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Web;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace EmployeeService.App_Code.Repositories
@@ -16,37 +17,71 @@ namespace EmployeeService.App_Code.Repositories
     {
         private readonly string connectionString = @ConfigurationManager.ConnectionStrings["Emploee"].ConnectionString;
 
-        public DataTable GetEmployeeById(int id)
+        public async Task<DataTable> GetEmployeeByIdAsync(int id)
         {
+            string queryString = "SELECT * FROM Employee WHERE ID = @EmployeeId";
+            DataTable employee = new DataTable();
+
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string query = String.Format("SELECT * FROM Employee WHERE ID = {0}", id);
-                using (SqlCommand command = new SqlCommand(query, connection))
+                SqlCommand command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@EmployeeId", id);
+
+                await connection.OpenAsync();
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
-                    DataTable dataTable = new DataTable();
-                    SqlDataAdapter adapter = new SqlDataAdapter(command);
-                    adapter.Fill(dataTable);
-                    return dataTable;
+                    employee.Load(reader);
                 }
             }
+
+            return employee;
+            //using (SqlConnection connection = new SqlConnection(connectionString))
+            //{
+            //    string query = String.Format("SELECT * FROM Employee WHERE ID = {0}", id);
+            //    using (SqlCommand command = new SqlCommand(query, connection))
+            //    {
+            //        DataTable dataTable = new DataTable();
+            //        SqlDataAdapter adapter = new SqlDataAdapter(command);
+            //        adapter.Fill(dataTable);
+            //        return dataTable;
+            //    }
+            //}
         }
 
-        public DataTable GetSubordinatesForEmployee(int id)
+        public async Task<DataTable> GetSubordinatesForEmployeeAsync(int id)
         {
+            string queryString = "SELECT * FROM Employee WHERE ManagerId = @EmployeeId";
+            DataTable employees = new DataTable();
+
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string query = String.Format("SELECT * FROM Employee WHERE ManagerId = {0}", id);
-                using (SqlCommand command = new SqlCommand(query, connection))
+                SqlCommand command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@EmployeeId", id);
+
+                await connection.OpenAsync();
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
-                    DataTable dataTable = new DataTable();
-                    SqlDataAdapter adapter = new SqlDataAdapter(command);
-                    adapter.Fill(dataTable);
-                    return dataTable;
+                    employees.Load(reader);
                 }
             }
+
+            return employees;
+            //using (SqlConnection connection = new SqlConnection(connectionString))
+            //{
+            //    string query = String.Format("SELECT * FROM Employee WHERE ManagerId = {0}", id);
+            //    using (SqlCommand command = new SqlCommand(query, connection))
+            //    {
+            //        DataTable dataTable = new DataTable();
+            //        SqlDataAdapter adapter = new SqlDataAdapter(command);
+            //        adapter.Fill(dataTable);
+            //        return dataTable;
+            //    }
+            //}
         }
 
-        public bool UpdateEmployee(int id, int enabled)
+        public async Task<bool> UpdateEmployeeAsync(int id, int enabled)
         {
             bool isUpdated = false;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -58,8 +93,8 @@ namespace EmployeeService.App_Code.Repositories
                     command.Parameters.AddWithValue("@Enable", enabled);
                     command.Parameters.AddWithValue("@Id", id);
 
-                    connection.Open();
-                    int rowsAffected = command.ExecuteNonQuery();
+                    await connection.OpenAsync();
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
 
                     if (rowsAffected > 0)
                     {

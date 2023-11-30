@@ -9,6 +9,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace EmployeeService.App_Code.Services
@@ -22,16 +23,16 @@ namespace EmployeeService.App_Code.Services
             this.repository = repository;
         }
 
-        public string GetJsonEmployeeById(int id)
+        public async Task<string> GetJsonEmployeeByIdAsync(int id)
         {
             string employeeJson = string.Empty;
-            DataTable employeeData = repository.GetEmployeeById(id);
+            DataTable employeeData = await repository.GetEmployeeByIdAsync(id);
 
             if (employeeData.Rows.Count > 0)
             {
                 List<EmployeeModel> subordinates = new List<EmployeeModel>();
 
-                DataTable subordinatesData = repository.GetSubordinatesForEmployee(id);
+                DataTable subordinatesData = await repository.GetSubordinatesForEmployeeAsync(id);
                 foreach (DataRow subRow in subordinatesData.Rows)
                 {
                     subordinates.Add(new EmployeeModel
@@ -51,9 +52,9 @@ namespace EmployeeService.App_Code.Services
             return employeeJson;
         }
 
-        public bool UpdateEmployee(int id, int enabled)
+        public async Task<bool> UpdateEmployeeAsync(int id, int enabled)
         {
-            return repository.UpdateEmployee(id, enabled);
+            return await repository.UpdateEmployeeAsync(id, enabled);
         }
 
         private EmployeeModel MapEmployeeAndSubordinates(DataTable employeeDataTable, List<EmployeeModel> subordinateMap)

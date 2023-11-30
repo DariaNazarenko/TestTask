@@ -9,8 +9,8 @@ namespace EmployeeService.App_Code.Repositories.Interfaces
 {
     public interface IEmployeeRepository
     {
-        DataTable GetEmployeeById(int id);
-        DataTable GetSubordinatesForEmployee(int id);
-        bool UpdateEmployee(int id, int enabled);
+        Task<DataTable> GetEmployeeByIdAsync(int id);
+        Task<DataTable> GetSubordinatesForEmployeeAsync(int id);
+        Task<bool> UpdateEmployeeAsync(int id, int enabled);
     }
 }

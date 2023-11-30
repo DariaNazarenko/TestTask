@@ -8,7 +8,7 @@ namespace EmployeeService.App_Code.Services.Interfaces
 {
     public interface IEmplService
     {
-        string GetJsonEmployeeById(int id);
-        bool UpdateEmployee(int id, int enabled);
+        Task<string> GetJsonEmployeeByIdAsync(int id);
+        Task<bool> UpdateEmployeeAsync(int id, int enabled);
     }
 }

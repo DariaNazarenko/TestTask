@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.ServiceModel.Web;
+using System.Threading.Tasks;
 using EmployeeService.App_Code.Repositories;
 using EmployeeService.App_Code.Services;
 using EmployeeService.App_Code.Services.Interfaces;
@@ -24,11 +25,11 @@ namespace EmployeeService
             employeeService = new EmplService(repository);
         }
 
-        public string GetEmployeeById(int id)
+        public async Task<string> GetEmployeeById(int id)
         {
             try
             {
-                var result = employeeService.GetJsonEmployeeById(id);
+                var result = await employeeService.GetJsonEmployeeByIdAsync(id);
 
                 if (string.IsNullOrEmpty(result))
                 {
@@ -47,11 +48,11 @@ namespace EmployeeService
             }
         }
 
-        public void EnableEmployee(int id, int enable)
+        public async Task EnableEmployee(int id, int enable)
         {
             try
             {
-                if (!employeeService.UpdateEmployee(id, enable))
+                if (!await employeeService.UpdateEmployeeAsync(id, enable))
                 {
                     throw new WebFaultException<string>("User not found.", HttpStatusCode.NotFound);
                 }                
